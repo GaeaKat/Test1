@@ -28,15 +28,16 @@ jobs:
           export CURRENT_VERSION="${RELEASE_VERSION}"
           echo "Current version: ${CURRENT_VERSION}"
           conan install . -r proofofwork
-          conan create . proofofwork/unstable -r proofofwork
-          conan upload test/${CURRENT_VERSION}@proofofwork/unstable -r proofofwork --all
+          conan create . proofofwork/stable -r proofofwork
+          conan upload test/${CURRENT_VERSION}@proofofwork/stable -r proofofwork --all
       - name: prepare release package
         run: |
           mkdir build && cd build
           conan install .. -r=proofofwork
           cmake .. -DPACKAGE_TESTS=Off
           cmake --build .
-          cp /include ./
+          ls ../../
+          cp ../include ./
           tar -czvf test-${$RELEASE_VERSION}.tar.gz include lib
       - name: Upload release
         uses: svenstaro/upload-release-action@v2
