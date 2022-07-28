@@ -1,16 +1,22 @@
 name: Conan development
 on:
   push:
-    tags:
-      - '*'
+    branches:
+      - production
 env:
   BUILD_TYPE: Release
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Set env
-        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+      - id: release
+        uses: rymndhng/release-on-push-action@master
+        with:
+          use_github_release_notes: true
+      - name: Check Output Parameters
+        run: |
+          echo "Got tag name ${{ steps.release.outputs.tag_name }}"
+          echo "Got release version ${{ steps.release.outputs.version }}"
       - uses: actions/checkout@v2
       - name: Get Conan
         uses: turtlebrowser/get-conan@v1.0
@@ -25,7 +31,7 @@ jobs:
           conan config set general.revisions_enabled=True 
           conan remote add proofofwork https://conan.pow.co/artifactory/api/conan/conan
           conan user -p ${{ secrets.CONAN_USER_KEY }} -r proofofwork github
-          export CURRENT_VERSION="${RELEASE_VERSION}"
+          export CURRENT_VERSION="${{ steps.release.outputs.tag_name }}"
           echo "Current version: ${CURRENT_VERSION}"
           conan install . -r proofofwork
           conan create . proofofwork/stable -r proofofwork
@@ -38,11 +44,11 @@ jobs:
           cmake .. -DPACKAGE_TESTS=Off
           cmake --build .
           ls ../
-          export CURRENT_VERSION="${RELEASE_VERSION}"
+          export CURRENT_VERSION="${{ steps.release.outputs.tag_name }}"
           tar -czvf "test-${CURRENT_VERSION}.tar.gz" bin
       - name: Upload release
         uses: svenstaro/upload-release-action@v2
         with:
           tag: ${{ github.ref }}
-          file: build/test-${{env.RELEASE_VERSION}}.tar.gz
-          asset_name: test-${{env.RELEASE_VERSION}}.tar.gz
+          file: build/test-${{ steps.release.outputs.tag_name }}.tar.gz
+          asset_name: test-${{ steps.release.outputs.tag_name }}.tar.gz
