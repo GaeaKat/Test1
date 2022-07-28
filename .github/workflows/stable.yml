@@ -44,5 +44,5 @@ jobs:
         uses: svenstaro/upload-release-action@v2
         with:
           tag: ${{ github.ref }}
-          file: build/test-${$RELEASE_VERSION}.tar.gz
+          file: build/test-${RELEASE_VERSION}.tar.gz
           name: test-${$RELEASE_VERSION}.tar.gz
