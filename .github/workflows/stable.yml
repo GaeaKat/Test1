@@ -12,6 +12,7 @@ jobs:
       - id: release
         uses: rymndhng/release-on-push-action@master
         with:
+          bump_version_scheme: patch
           use_github_release_notes: true
       - name: Check Output Parameters
         run: |
@@ -49,7 +50,6 @@ jobs:
       - name: Upload release
         uses: svenstaro/upload-release-action@v2
         with:
-          bump_version_scheme: patch
           tag: ${{ github.ref }}
           file: build/test-${{ steps.release.outputs.tag_name }}.tar.gz
           asset_name: test-${{ steps.release.outputs.tag_name }}.tar.gz
