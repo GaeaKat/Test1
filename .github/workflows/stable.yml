@@ -49,6 +49,7 @@ jobs:
       - name: Upload release
         uses: svenstaro/upload-release-action@v2
         with:
+          bump_version_scheme: patch
           tag: ${{ github.ref }}
           file: build/test-${{ steps.release.outputs.tag_name }}.tar.gz
           asset_name: test-${{ steps.release.outputs.tag_name }}.tar.gz
