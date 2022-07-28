@@ -1,8 +1,6 @@
 name: Conan development
 on:
   push:
-    branches:
-      - 'production'
     tags:
       - '*'
 env:
@@ -11,6 +9,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: Set output
+        id: vars
+        run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
       - uses: actions/checkout@v2
       - name: Get Conan
         uses: turtlebrowser/get-conan@v1.0
@@ -25,7 +26,7 @@ jobs:
           conan config set general.revisions_enabled=True 
           conan remote add proofofwork https://conan.pow.co/artifactory/api/conan/conan
           conan user -p ${{ secrets.CONAN_USER_KEY }} -r proofofwork github
-          export CURRENT_VERSION=`${{github.ref}}`
+          export CURRENT_VERSION=$RELEASE_VERSION
           conan install . -r proofofwork
           conan create . proofofwork/unstable -r proofofwork
           conan upload test/${CURRENT_VERSION}@proofofwork/unstable -r proofofwork --all
@@ -36,10 +37,10 @@ jobs:
           cmake .. -DPACKAGE_TESTS=Off
           cmake --build .
           cp ../include ./
-          tar -czvf test-${{github.ref}}.tar.gz include lib
+          tar -czvf test-${$RELEASE_VERSION}.tar.gz include lib
       - name: Upload release
         uses: svenstaro/upload-release-action@v2
         with:
           tag: ${{ github.ref }}
-          file: build/test-${{github.ref}}.tar.gz
-          name: test-${{github.ref}}.tar.gz
+          file: build/test-${$RELEASE_VERSION}.tar.gz
+          name: test-${$RELEASE_VERSION}.tar.gz
