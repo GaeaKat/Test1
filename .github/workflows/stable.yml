@@ -38,8 +38,7 @@ jobs:
           cmake .. -DPACKAGE_TESTS=Off
           cmake --build .
           ls ../
-          cp ../include ./
-          tar -czvf test-${$RELEASE_VERSION}.tar.gz include lib
+          tar -czvf test-${$RELEASE_VERSION}.tar.gz bin
       - name: Upload release
         uses: svenstaro/upload-release-action@v2
         with:
