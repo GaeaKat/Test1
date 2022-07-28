@@ -25,8 +25,8 @@ jobs:
           conan config set general.revisions_enabled=True 
           conan remote add proofofwork https://conan.pow.co/artifactory/api/conan/conan
           conan user -p ${{ secrets.CONAN_USER_KEY }} -r proofofwork github
-          export CURRENT_VERSION=`${RELEASE_VERSION}`
-          echo `Current version: ${CURRENT_VERSION}`
+          export CURRENT_VERSION='${RELEASE_VERSION}'
+          echo 'Current version: ${CURRENT_VERSION}'
           conan install . -r proofofwork
           conan create . proofofwork/unstable -r proofofwork
           conan upload test/${CURRENT_VERSION}@proofofwork/unstable -r proofofwork --all
