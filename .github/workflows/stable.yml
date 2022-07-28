@@ -37,7 +37,7 @@ jobs:
           conan install .. -r=proofofwork
           cmake .. -DPACKAGE_TESTS=Off
           cmake --build .
-          ls ../../
+          ls ../
           cp ../include ./
           tar -czvf test-${$RELEASE_VERSION}.tar.gz include lib
       - name: Upload release
