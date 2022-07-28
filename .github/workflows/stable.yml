@@ -36,7 +36,7 @@ jobs:
           conan install .. -r=proofofwork
           cmake .. -DPACKAGE_TESTS=Off
           cmake --build .
-          cp ../include ./
+          cp /include ./
           tar -czvf test-${$RELEASE_VERSION}.tar.gz include lib
       - name: Upload release
         uses: svenstaro/upload-release-action@v2
