@@ -9,9 +9,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Set output
-        id: vars
-        run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
+      - name: Set env
+        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
       - uses: actions/checkout@v2
       - name: Get Conan
         uses: turtlebrowser/get-conan@v1.0
@@ -27,6 +26,7 @@ jobs:
           conan remote add proofofwork https://conan.pow.co/artifactory/api/conan/conan
           conan user -p ${{ secrets.CONAN_USER_KEY }} -r proofofwork github
           export CURRENT_VERSION=`${RELEASE_VERSION}`
+          echo `Current version: ${CURRENT_VERSION}`
           conan install . -r proofofwork
           conan create . proofofwork/unstable -r proofofwork
           conan upload test/${CURRENT_VERSION}@proofofwork/unstable -r proofofwork --all
