@@ -45,4 +45,4 @@ jobs:
         with:
           tag: ${{ github.ref }}
           file: build/test-${RELEASE_VERSION}.tar.gz
-          name: test-${$RELEASE_VERSION}.tar.gz
+          name: test-${RELEASE_VERSION}.tar.gz
